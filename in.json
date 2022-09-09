@@ -1,0 +1,36 @@
+[
+    {
+        "action": "saldo",
+        "value": 1000000,
+        "comment": "wplata poczatkowa"
+    },
+    {
+        "action": "saldo",
+        "value": -140000,
+        "comment": "zus"
+    },
+    {
+        "action": "zakup",
+        "item": "raspberry",
+        "price": 15000,
+        "qty": 5
+    },
+        {
+        "action": "zakup",
+        "item": "raspberry",
+        "price": 15000,
+        "qty": 10
+    },
+        {
+        "action": "zakup",
+        "item": "raspberry2",
+        "price": 15000,
+        "qty": 10
+    },
+    {
+        "action": "sprzedaz",
+        "item": "raspberry2",
+        "price": 15000,
+        "qty": 5
+    }
+]

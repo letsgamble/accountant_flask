@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Accountant</title>
+</head>
+<body>
+<b>BALANCE:</b><br> {{ content }} <br><br>
+<b>WAREHOUSE:</b>
+{% for key in content2 %}
+<table>
+<tr>
+<td>{{ key }}:</td>
+<td>{{ content2[key] }}</td>
+</tr>
+</table>
+{% endfor %}
+<br>
+<form action="zakup" method="GET">
+<table>
+      <caption>Zakup</caption>
+      <tr>
+        <td>Product name:</td>
+        <td><input name="nazwa" type="text" size="20"></td>
+      </tr>
+      <tr>
+        <td>Unit price:</td>
+        <td><input name="cena" type="number" size="20"></td>
+      </tr>
+      <tr>
+        <td>Qty:</td>
+        <td><input name="liczba" type="number" size="20"></td>
+      </tr>
+</table>
+<input type="submit" value="Submit">
+</form>
+<br>
+<form action="sprzedaz" method="GET">
+<table>
+      <caption>Sprzedaz</caption>
+      <tr>
+        <td>Product name:</td>
+        <td><input name="nazwa" type="text" size="20"></td>
+      </tr>
+      <tr>
+        <td>Unit price:</td>
+        <td><input name="cena" type="number" size="20"></td>
+      </tr>
+      <tr>
+        <td>Qty:</td>
+        <td><input name="liczba" type="number" size="20"></td>
+      </tr>
+</table>
+<input type="submit" value="Submit">
+</form>
+<br>
+<form action="saldo" method="GET">
+<table>
+      <caption>Saldo</caption>
+      <tr>
+        <td>Product name:</td>
+        <td><input name="komentarz" type="text" size="20"></td>
+      </tr>
+      <tr>
+        <td>Unit price:</td>
+        <td><input name="saldo" type="number" size="20"></td>
+      </tr>
+</table>
+<input type="submit" value="Submit">
+</form>
+</body>
+</html>
