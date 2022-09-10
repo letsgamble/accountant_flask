@@ -67,7 +67,7 @@ def zakup():
     item = request.form.get('nazwa')
     price = request.form.get('cena')
     qty = request.form.get('liczba')
-    if not (item or price or qty) == '':
+    if not item == '' and not price == '' and not qty == '':
         price = int(price)
         qty = int(qty)
         if price*qty <= stan_konta:
@@ -88,7 +88,7 @@ def sprzedaz():
     item = request.args.get('nazwa')
     price = request.args.get('cena')
     qty = request.args.get('liczba')
-    if not (item or price or qty) == '':
+    if not item == '' and not price == '' and not qty == '':
         price = int(price)
         qty = int(qty)
         if item in manager.new_magazyn and qty <= manager.new_magazyn[item]:
@@ -115,7 +115,7 @@ def saldo():
     stan_konta = manager.stan_konta
     value = request.args.get('saldo')
     comment = request.args.get('komentarz')
-    if not (value or comment) == '':
+    if not value == '' and not comment == '':
         value = int(value)
         if stan_konta + value >= 0:
             manager.data.append({'action': 'saldo', 'value': value, 'comment': comment})
