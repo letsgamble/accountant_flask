@@ -15,13 +15,13 @@
         "price": 15000,
         "qty": 5
     },
-        {
+    {
         "action": "zakup",
         "item": "raspberry",
         "price": 15000,
         "qty": 10
     },
-        {
+    {
         "action": "zakup",
         "item": "raspberry2",
         "price": 15000,
