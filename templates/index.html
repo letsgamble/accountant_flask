@@ -16,7 +16,7 @@
 </table>
 {% endfor %}
 <br>
-<form action="zakup" method="POST">
+<form action="/zakup/" method="POST">
 <table>
       <caption>Zakup</caption>
       <tr>
@@ -35,7 +35,7 @@
 <input type="submit" value="Submit">
 </form>
 <br>
-<form action="sprzedaz" method="GET">
+<form action="/sprzedaz/" method="POST">
 <table>
       <caption>Sprzedaz</caption>
       <tr>
@@ -54,7 +54,7 @@
 <input type="submit" value="Submit">
 </form>
 <br>
-<form action="saldo" method="GET">
+<form action="/saldo/" method="POST">
 <table>
       <caption>Saldo</caption>
       <tr>
@@ -66,7 +66,15 @@
         <td><input name="saldo" type="number" size="20"></td>
       </tr>
 </table>
-<input type="submit" value="Submit">
+<input type="submit" value="Submit"><br><br><br>
+    <b>{% with messages = get_flashed_messages() %}
+   {% if messages %}
+      {% for message in messages %}
+         {{ message }}
+      {% endfor %}
+   {% endif %}
+{% endwith %}</b>
 </form>
+<br>
 </body>
 </html>

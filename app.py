@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for, flash
 import json
 import collections
 import functools
 import operator
 
 app = Flask(__name__)
+app.secret_key = 'many random bytes'
 
 
 class Manager:
@@ -61,73 +62,85 @@ def main():
     return render_template('index.html', content=stan_konta, content2=magazyn)
 
 
-@app.route('/zakup/', methods=['POST', 'GET'])
+@app.route('/zakup/', methods=['GET', 'POST'])
 def zakup():
-    stan_konta = manager.stan_konta
-    item = request.form.get('nazwa')
-    price = request.form.get('cena')
-    qty = request.form.get('liczba')
-    if not item == '' and not price == '' and not qty == '':
-        price = int(price)
-        qty = int(qty)
-        if price*qty <= stan_konta:
-            manager.data.append({'action': 'zakup', 'item': item, 'price': price, 'qty': qty})
-            manager.json_file_saver()
-            manager.reset_handler()
-            manager.json_file_loader()
-            manager.json_file_handler()
-            return redirect('/')
+    if request.method == 'POST':
+        stan_konta = manager.stan_konta
+        item = request.form.get('nazwa')
+        price = request.form.get('cena')
+        qty = request.form.get('liczba')
+        if not item == '' and not price == '' and not qty == '':
+            price = int(price)
+            qty = int(qty)
+            if price*qty <= stan_konta:
+                manager.data.append({'action': 'zakup', 'item': item, 'price': price, 'qty': qty})
+                manager.json_file_saver()
+                manager.reset_handler()
+                manager.json_file_loader()
+                manager.json_file_handler()
+                flash(f'{qty} {item} bought for {qty*price}')
+                return redirect(url_for('main'))
+            else:
+                flash('Not enough money')
+                return redirect(url_for('main'))
         else:
-            return render_template('error.html', context="You dont have enough money")
-    else:
-        return render_template('error.html', context="Please fill all fields")
+            flash(f'Fill all the fields in {saldo.__name__}')
+            return redirect(url_for('main'))
 
 
-@app.route('/sprzedaz/')
+@app.route('/sprzedaz/', methods=['GET', 'POST'])
 def sprzedaz():
-    item = request.args.get('nazwa')
-    price = request.args.get('cena')
-    qty = request.args.get('liczba')
-    if not item == '' and not price == '' and not qty == '':
-        price = int(price)
-        qty = int(qty)
-        if item in manager.new_magazyn and qty <= manager.new_magazyn[item]:
-            _dict = {
-                "action": "sprzedaz",
-                "item": item,
-                "price": price,
-                "qty": qty
-            }
-            manager.data.append(_dict)
-            manager.json_file_saver()
-            manager.reset_handler()
-            manager.json_file_loader()
-            manager.json_file_handler()
-            return redirect('/')
+    if request.method == 'POST':
+        item = request.form.get('nazwa')
+        price = request.form.get('cena')
+        qty = request.form.get('liczba')
+        if not item == '' and not price == '' and not qty == '':
+            price = int(price)
+            qty = int(qty)
+            if item in manager.new_magazyn and qty <= manager.new_magazyn[item]:
+                _dict = {
+                    "action": "sprzedaz",
+                    "item": item,
+                    "price": price,
+                    "qty": qty
+                }
+                manager.data.append(_dict)
+                manager.json_file_saver()
+                manager.reset_handler()
+                manager.json_file_loader()
+                manager.json_file_handler()
+                flash(f'{qty} {item} sold for {qty*price}')
+                return redirect(url_for('main'))
+            else:
+                flash('Item does not exist or not enough of it')
+                return redirect(url_for('main'))
         else:
-            return render_template('error.html', context="Item does not exist in the database, or there is not enough")
-    else:
-        return render_template('error.html', context="Please fill all fields")
+            flash(f'Fill all the fields in {saldo.__name__}')
+            return redirect(url_for('main'))
 
 
-@app.route('/saldo/')
+@app.route('/saldo/', methods=['GET', 'POST'])
 def saldo():
-    stan_konta = manager.stan_konta
-    value = request.args.get('saldo')
-    comment = request.args.get('komentarz')
-    if not value == '' and not comment == '':
-        value = int(value)
-        if stan_konta + value >= 0:
-            manager.data.append({'action': 'saldo', 'value': value, 'comment': comment})
-            manager.json_file_saver()
-            manager.reset_handler()
-            manager.json_file_loader()
-            manager.json_file_handler()
-            return redirect('/')
+    if request.method == 'POST':
+        stan_konta = manager.stan_konta
+        value = request.form.get('saldo')
+        comment = request.form.get('komentarz')
+        if not value == '' and not comment == '':
+            value = int(value)
+            if stan_konta + value >= 0:
+                manager.data.append({'action': 'saldo', 'value': value, 'comment': comment})
+                manager.json_file_saver()
+                manager.reset_handler()
+                manager.json_file_loader()
+                manager.json_file_handler()
+                flash(f'{comment} changed balance for {value}')
+                return redirect(url_for('main'))
+            else:
+                flash('Not enough money')
+                return redirect(url_for('main'))
         else:
-            return render_template('error.html', context="Not enough money")
-    else:
-        return render_template('error.html', context="Please fill all fields")
+            flash(f'Fill all the fields in {saldo.__name__}')
+            return redirect(url_for('main'))
 
 
 @app.route('/historia/')
@@ -148,5 +161,6 @@ def historia_lines(line_from, line_to):
         return render_template('history.html', content=data, content2=stan_konta, content3=magazyn)
     else:
         return render_template('history.html', content2=stan_konta, content3=magazyn,
-                               content4='Line number must be positive, line_to must be higher or equal to line_from, '
-                                        'values cannot be 0')
+                               content4='1) Line number must be positive',
+                               content5='2) Line_to must be higher or equal to line_from',
+                               content6='3) Values cannot be 0')
