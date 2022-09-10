@@ -113,7 +113,6 @@ def sprzedaz():
 @app.route('/saldo/')
 def saldo():
     stan_konta = manager.stan_konta
-    magazyn = manager.new_magazyn
     value = request.args.get('saldo')
     comment = request.args.get('komentarz')
     if not (value or comment) == '':
@@ -124,14 +123,11 @@ def saldo():
             manager.reset_handler()
             manager.json_file_loader()
             manager.json_file_handler()
-            stan_konta = manager.stan_konta
-            magazyn = manager.new_magazyn
-            return render_template('index.html', content=stan_konta, content2=magazyn)
+            return redirect('/')
         else:
-            return render_template('index.html', content=stan_konta, content2=magazyn, content5='Not enough money')
+            return render_template('error.html', context="Not enough money")
     else:
-        return render_template('index.html', content=stan_konta, content2=magazyn,
-                               content5='Please fill the fields properly')
+        return render_template('error.html', context="Please fill all fields")
 
 
 @app.route('/historia/')
