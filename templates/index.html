@@ -16,7 +16,7 @@
 </table>
 {% endfor %}
 <br>
-<form action="zakup" method="GET">
+<form action="zakup" method="POST">
 <table>
       <caption>Zakup</caption>
       <tr>
@@ -32,7 +32,7 @@
         <td><input name="liczba" type="number" size="20"></td>
       </tr>
 </table>
-<input type="submit" value="Submit"> <b>{{ content3 }}</b>
+<input type="submit" value="Submit">
 </form>
 <br>
 <form action="sprzedaz" method="GET">
@@ -51,7 +51,7 @@
         <td><input name="liczba" type="number" size="20"></td>
       </tr>
 </table>
-<input type="submit" value="Submit"> <b>{{ content4 }}</b>
+<input type="submit" value="Submit">
 </form>
 <br>
 <form action="saldo" method="GET">
@@ -66,7 +66,7 @@
         <td><input name="saldo" type="number" size="20"></td>
       </tr>
 </table>
-<input type="submit" value="Submit"> <b>{{ content5 }}</b>
+<input type="submit" value="Submit">
 </form>
 </body>
 </html>

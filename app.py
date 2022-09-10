@@ -1,6 +1,4 @@
-from flask import Flask
-from flask import render_template
-from flask import request
+from flask import Flask, render_template, request, redirect, flash, url_for
 import json
 import collections
 import functools
@@ -63,13 +61,12 @@ def main():
     return render_template('index.html', content=stan_konta, content2=magazyn)
 
 
-@app.route('/zakup/')
+@app.route('/zakup/', methods=['POST', 'GET'])
 def zakup():
     stan_konta = manager.stan_konta
-    magazyn = manager.new_magazyn
-    item = request.args.get('nazwa')
-    price = request.args.get('cena')
-    qty = request.args.get('liczba')
+    item = request.form.get('nazwa')
+    price = request.form.get('cena')
+    qty = request.form.get('liczba')
     if not (item or price or qty) == '':
         price = int(price)
         qty = int(qty)
@@ -79,20 +76,15 @@ def zakup():
             manager.reset_handler()
             manager.json_file_loader()
             manager.json_file_handler()
-            stan_konta = manager.stan_konta
-            magazyn = manager.new_magazyn
-            return render_template('index.html', content=stan_konta, content2=magazyn)
+            return redirect('/')
         else:
-            return render_template('index.html', content=stan_konta, content2=magazyn, content3='Not enough money')
+            return render_template('error.html', context="You dont have enough money")
     else:
-        return render_template('index.html', content=stan_konta, content2=magazyn,
-                               content3='Please fill the fields properly')
+        return render_template('error.html', context="Please fill all fields")
 
 
 @app.route('/sprzedaz/')
 def sprzedaz():
-    stan_konta = manager.stan_konta
-    magazyn = manager.new_magazyn
     item = request.args.get('nazwa')
     price = request.args.get('cena')
     qty = request.args.get('liczba')
@@ -111,15 +103,11 @@ def sprzedaz():
             manager.reset_handler()
             manager.json_file_loader()
             manager.json_file_handler()
-            stan_konta = manager.stan_konta
-            magazyn = manager.new_magazyn
-            return render_template('index.html', content=stan_konta, content2=magazyn)
+            return redirect('/')
         else:
-            return render_template('index.html', content=stan_konta, content2=magazyn,
-                                   content4='Item does not exist in the database, or there is not enough')
+            return render_template('error.html', context="Item does not exist in the database, or there is not enough")
     else:
-        return render_template('index.html', content=stan_konta, content2=magazyn,
-                               content4='Please fill the fields properly')
+        return render_template('error.html', context="Please fill all fields")
 
 
 @app.route('/saldo/')
