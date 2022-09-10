@@ -84,7 +84,7 @@ def zakup():
                 flash('Not enough money')
                 return redirect(url_for('main'))
         else:
-            flash(f'Fill all the fields in {saldo.__name__}')
+            flash(f'Fill all the fields in {zakup.__name__}')
             return redirect(url_for('main'))
 
 
@@ -115,7 +115,7 @@ def sprzedaz():
                 flash('Item does not exist or not enough of it')
                 return redirect(url_for('main'))
         else:
-            flash(f'Fill all the fields in {saldo.__name__}')
+            flash(f'Fill all the fields in {sprzedaz.__name__}')
             return redirect(url_for('main'))
 
 
