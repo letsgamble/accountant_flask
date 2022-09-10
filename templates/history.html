@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>History</title>
+</head>
+<body>
+<b>BALANCE:</b><br> {{ content2 }} <br><br>
+<b>WAREHOUSE:</b>
+{% for key in content3 %}
+<table>
+<tr>
+<td>{{ key }}:</td>
+<td>{{ content3[key] }}</td>
+</tr>
+</table>
+{% endfor %}
+<br>
+<b>HISTORY:</b><br><br>
+<b>{{ content4 }}</b>
+{% for val in content %}
+{{ val }}<br>
+{% endfor %}
+</body>
+</html>

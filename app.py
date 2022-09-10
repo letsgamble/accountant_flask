@@ -63,7 +63,7 @@ def main():
     return render_template('index.html', content=stan_konta, content2=magazyn)
 
 
-@app.route('/zakup')
+@app.route('/zakup/')
 def zakup():
     stan_konta = manager.stan_konta
     magazyn = manager.new_magazyn
@@ -89,7 +89,7 @@ def zakup():
                                content3='Please fill the fields properly')
 
 
-@app.route('/sprzedaz')
+@app.route('/sprzedaz/')
 def sprzedaz():
     stan_konta = manager.stan_konta
     magazyn = manager.new_magazyn
@@ -122,7 +122,7 @@ def sprzedaz():
                                content4='Please fill the fields properly')
 
 
-@app.route('/saldo')
+@app.route('/saldo/')
 def saldo():
     stan_konta = manager.stan_konta
     magazyn = manager.new_magazyn
@@ -144,3 +144,25 @@ def saldo():
     else:
         return render_template('index.html', content=stan_konta, content2=magazyn,
                                content5='Please fill the fields properly')
+
+
+@app.route('/historia/')
+def historia():
+    stan_konta = manager.stan_konta
+    magazyn = manager.new_magazyn
+    data = manager.data
+    return render_template('history.html', content=data, content2=stan_konta, content3=magazyn)
+
+
+@app.route('/historia/<line_from>/<line_to>/')
+def historia_lines(line_from, line_to):
+    stan_konta = manager.stan_konta
+    magazyn = manager.new_magazyn
+    if int(line_from) >= 1 and not int(line_from) > int(line_to):
+        line_from = int(line_from) - int(1)
+        data = manager.data[line_from:int(line_to)]
+        return render_template('history.html', content=data, content2=stan_konta, content3=magazyn)
+    else:
+        return render_template('history.html', content2=stan_konta, content3=magazyn,
+                               content4='Line number must be positive, line_to must be higher or equal to line_from, '
+                                        'values cannot be 0')

@@ -26,11 +26,5 @@
         "item": "raspberry2",
         "price": 15000,
         "qty": 10
-    },
-    {
-        "action": "sprzedaz",
-        "item": "raspberry2",
-        "price": 15000,
-        "qty": 5
     }
 ]
