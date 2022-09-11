@@ -69,7 +69,7 @@ def zakup():
         item = request.form.get('nazwa')
         price = request.form.get('cena')
         qty = request.form.get('liczba')
-        if not item == '' and not price == '' and not qty == '':
+        if not item == '' and not price == '' and not qty == '' and int(qty) > 0 and int(price) > 0:
             price = int(price)
             qty = int(qty)
             if price*qty <= stan_konta:
@@ -84,7 +84,7 @@ def zakup():
                 flash('Not enough money')
                 return redirect(url_for('main'))
         else:
-            flash(f'Fill all the fields in {zakup.__name__}')
+            flash(f'Fix all the fields in zakup')
             return redirect(url_for('main'))
 
 
@@ -94,7 +94,7 @@ def sprzedaz():
         item = request.form.get('nazwa')
         price = request.form.get('cena')
         qty = request.form.get('liczba')
-        if not item == '' and not price == '' and not qty == '':
+        if not item == '' and not price == '' and not qty == '' and int(qty) > 0 and int(price) > 0:
             price = int(price)
             qty = int(qty)
             if item in manager.new_magazyn and qty <= manager.new_magazyn[item]:
@@ -115,7 +115,7 @@ def sprzedaz():
                 flash('Item does not exist or not enough of it')
                 return redirect(url_for('main'))
         else:
-            flash(f'Fill all the fields in {sprzedaz.__name__}')
+            flash(f'Fix all the fields in sprzedaz')
             return redirect(url_for('main'))
 
 
@@ -139,7 +139,7 @@ def saldo():
                 flash('Not enough money')
                 return redirect(url_for('main'))
         else:
-            flash(f'Fill all the fields in {saldo.__name__}')
+            flash(f'Fill all the fields in saldo')
             return redirect(url_for('main'))
 
 
