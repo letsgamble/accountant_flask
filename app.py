@@ -1,11 +1,33 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
+from flask_alembic import Alembic
 import json
 import collections
 import functools
 import operator
 
+
 app = Flask(__name__)
 app.secret_key = 'many random bytes'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///accountant.db'
+db = SQLAlchemy(app)
+
+
+class Accountant(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    action = db.Column(db.String(10), nullable=False)
+    value = db.Column(db.Integer, nullable=True)
+    comment = db.Column(db.String(255), nullable=True)
+    item = db.Column(db.String(50), nullable=True)
+    price = db.Column(db.Integer, nullable=True)
+    qty = db.Column(db.Integer, nullable=True)
+
+
+db.create_all()
+
+
+alembic = Alembic()
+alembic.init_app(app)
 
 
 class Manager:
@@ -17,9 +39,13 @@ class Manager:
         self.magazyn = []
         self.new_magazyn = []
 
-    def json_file_loader(self):
-        with open(self.file_path, 'r') as f:
-            self.data = json.load(f)
+    def file_loader(self):
+        # with open(self.file_path, 'r') as f:
+        #     self.data = json.load(f)
+        # self.data = db.session.query(Accountant).all()
+        for query in db.session.query(Accountant).all():
+            del query.__dict__['_sa_instance_state']
+            self.data.append(query.__dict__)
 
     def reset_handler(self):
         self.stan_konta = 0
@@ -44,14 +70,21 @@ class Manager:
                         self.magazyn.append(sprzedaz_dict)
                         self.new_magazyn = dict(functools.reduce(operator.add, map(collections.Counter, self.magazyn)))
 
-    def json_file_saver(self):
-        with open(self.file_path, 'w', encoding='utf-8') as f:
-            json.dump(self.data, f, indent=4)
+    def file_saver(self):
+        # with open(self.file_path, 'w', encoding='utf-8') as f:
+        #     json.dump(self.data, f, indent=4)
+        db.session.query(Accountant).delete()
+        obj_list = []
+        for record in self.data:
+            accountant = Accountant(**record)
+            obj_list.append(accountant)
+            db.session.add_all(obj_list)
+            db.session.commit()
 
 
 manager = Manager()
 
-manager.json_file_loader()
+manager.file_loader()
 manager.json_file_handler()
 
 
@@ -74,9 +107,9 @@ def zakup():
             qty = int(qty)
             if price*qty <= stan_konta:
                 manager.data.append({'action': 'zakup', 'item': item, 'price': price, 'qty': qty})
-                manager.json_file_saver()
+                manager.file_saver()
                 manager.reset_handler()
-                manager.json_file_loader()
+                manager.file_loader()
                 manager.json_file_handler()
                 flash(f'{qty} {item} bought for {qty*price}')
                 return redirect(url_for('main'))
@@ -105,9 +138,9 @@ def sprzedaz():
                     "qty": qty
                 }
                 manager.data.append(_dict)
-                manager.json_file_saver()
+                manager.file_saver()
                 manager.reset_handler()
-                manager.json_file_loader()
+                manager.file_loader()
                 manager.json_file_handler()
                 flash(f'{qty} {item} sold for {qty*price}')
                 return redirect(url_for('main'))
@@ -129,9 +162,9 @@ def saldo():
             value = int(value)
             if stan_konta + value >= 0:
                 manager.data.append({'action': 'saldo', 'value': value, 'comment': comment})
-                manager.json_file_saver()
+                manager.file_saver()
                 manager.reset_handler()
-                manager.json_file_loader()
+                manager.file_loader()
                 manager.json_file_handler()
                 flash(f'{comment} changed balance for {value}')
                 return redirect(url_for('main'))
